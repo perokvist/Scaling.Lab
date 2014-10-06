@@ -64,11 +64,15 @@ namespace RPS.Api.Controllers
 
 
         [Route("awailable/{id:Guid}", Name = RouteConfiguration.AwailableGamesRoute)]
-        public Game.ReadModel.Game GetAwailableGame(Guid id)
+        public IHttpActionResult GetAwailableGame(Guid id)
         {
-            return _readService
+            var game = _readService
                 .AwailableGames
                 .SingleOrDefault(x => x.GameId == id);
+
+            if (game != null)
+                return Ok(game);
+            return NotFound();
         }
 
         [Route("awailable")]
@@ -80,11 +84,16 @@ namespace RPS.Api.Controllers
         }
 
         [Route("ended/{id:Guid}", Name = RouteConfiguration.EndedGamesRoute)]
-        public EndedGame GetEndedGame(Guid id)
+        public IHttpActionResult GetEndedGame(Guid id)
         {
-            return _readService
+            var game = _readService
                 .EndedGames
                 .SingleOrDefault(x => x.GameId == id);
+
+            if (game != null)
+                return Ok(game);
+
+            return NotFound();
         }
 
         [Route("ended")]

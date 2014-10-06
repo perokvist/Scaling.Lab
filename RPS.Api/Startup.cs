@@ -34,8 +34,8 @@ namespace RPS.Api
 
             var config = new HttpConfiguration();
             config.MapHttpAttributeRoutes();
-
             config.Formatters.Remove(config.Formatters.XmlFormatter);
+            config.Filters.Add(new LoadAttribute(100, 20));
 
             //Local config
             var commandDispatcher = new Dispatcher<ICommand, Task>();
