@@ -2,8 +2,8 @@
 
 ### Scenario
 
-The Company the runs the popular RPS-Game-As-A-Service is having trouble to handle traffic and performance.
-The service is single solution with six endpoints. They now seeks your help to scale the solution to handle the ever growing traffic.
+The Company that runs the popular RPS-Game-As-A-Service is having trouble to handle traffic and performance.
+The service is a single solution with six endpoints. They now seek your help to scale the solution to handle the ever growing traffic.
 
 In this lab you're going to diagnose their problem and investige options a round azure web sites scaling that could aid in solving the issues.
 
@@ -37,7 +37,7 @@ returns awailable games.
 
 >**GET** api/Games/awailable/{ id }
 
-returns single awailible game (200)
+returns single awailible game (200/404)
 
 ##### Ended Games
 
@@ -48,10 +48,10 @@ returns ended games. (200)
 
 >**GET** api/Games/ended/{ id }
 
-returns single ended game (200)
+returns single ended game (200/404)
 
 ### Tasks
-- Configure diagnotics for Azure Web Sites and add Tracing
+- Configure diagnostics for Azure Web Sites and add Tracing
 - Load test
 - Add NewRelic to further aid diagnostics
 - Investigate the web sites auto scale options
