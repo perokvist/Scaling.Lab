@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using RPS.Game.ReadModel;
+using Treefort.Application;
 using Treefort.Commanding;
 using Treefort.Common;
 using RPS.Game.Domain;
@@ -15,12 +17,12 @@ namespace RPS.Api.Controllers
     [RoutePrefix("api/Games")]
     public class GamesController : ApiController
     {
-        private readonly ICommandBus _commandBus;
+        private readonly Dispatcher<ICommand, Task> _dispatcher;
         private readonly IReadService _readService;
 
-        public GamesController(ICommandBus commandBus, IReadService readService)
+        public GamesController(Dispatcher<ICommand, Task> dispatcher , IReadService readService)
         {
-            _commandBus = commandBus;
+            _dispatcher = dispatcher;
             _readService = readService;
         }
 
@@ -38,15 +40,15 @@ namespace RPS.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Invalid move");
 
             var command = new Game.Domain.CreateGameCommand(gameId, input.PlayerName, input.GameName, move);
-            _commandBus.SendAsync(command); //Note - fire and forget with app server 
+            _dispatcher.Dispatch(command);
 
             return Request.CreateResponse(HttpStatusCode.Accepted)
-                .Tap(message => message.Headers.Location = new Uri(Url.Link(RouteConfiguration.AwailableGamesRoute, new { id = gameId })));
+                .Tap(message => message.Headers.Location = new Uri(Url.Link(RouteConfiguration.AvailableGamesRoute, new { id = gameId })));
         }
 
         [HttpPut]
-        [Route("awailable/{id:Guid}")]
-        public HttpResponseMessage Move(Guid id, Game.ReadModel.MakeMoveCommand input)
+        [Route("available/{id:Guid}")]
+        public async Task<HttpResponseMessage> Move(Guid id, Game.ReadModel.MakeMoveCommand input)
         {
             if (!ModelState.IsValid)
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
@@ -56,18 +58,17 @@ namespace RPS.Api.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Invalid move");
 
             var command = new Game.Domain.MakeMoveCommand(id, move, input.PlayerName);
-
-            _commandBus.SendAsync(command);
+            _dispatcher.Dispatch(command);
             return Request.CreateResponse(HttpStatusCode.Accepted).Tap(
                     r => r.Headers.Location = new Uri(Url.Link(RouteConfiguration.EndedGamesRoute, new { id })));
         }
 
 
-        [Route("awailable/{id:Guid}", Name = RouteConfiguration.AwailableGamesRoute)]
-        public IHttpActionResult GetAwailableGame(Guid id)
+        [Route("available/{id:Guid}", Name = RouteConfiguration.AvailableGamesRoute)]
+        public IHttpActionResult GetAvailableGame(Guid id)
         {
             var game = _readService
-                .AwailableGames
+                .AvailableGames
                 .SingleOrDefault(x => x.GameId == id);
 
             if (game != null)
@@ -75,11 +76,11 @@ namespace RPS.Api.Controllers
             return NotFound();
         }
 
-        [Route("awailable")]
-        public IEnumerable<Game.ReadModel.Game> GetAwailableGames()
+        [Route("available")]
+        public IEnumerable<Game.ReadModel.Game> GetAvailableGames()
         {
             return _readService
-                .AwailableGames
+                .AvailableGames
                 .Reverse();
         }
 

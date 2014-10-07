@@ -7,7 +7,6 @@ using Autofac.Integration.WebApi;
 using Microsoft.Owin;
 using Owin;
 using RPS.Game.Domain;
-using RPS.Game.Domain.Public;
 using RPS.Game.ReadModel;
 using Scaling.Lab.Utils;
 using Treefort.Application;
@@ -21,7 +20,7 @@ namespace RPS.Api
     public static class RouteConfiguration
     {
         public const string GamesRoute = "Games";
-        public const string AwailableGamesRoute = "Awailable";
+        public const string AvailableGamesRoute = "Available";
         public const string EndedGamesRoute = "Ended";
 
     }
@@ -38,29 +37,27 @@ namespace RPS.Api
             //Local config
             var commandDispatcher = new Dispatcher<ICommand, Task>();
 
-            var awailableGames = new AwailableGames();
+            var availableGames = new AvailableGames();
             var endedGames = new EndendGames();
 
             //TODO log to trace
             //http://blog.amitapple.com/post/2014/06/azure-website-logging/#.VC6_jvmSyPY
-            var eventPublisher = new EventPublisher(Console.WriteLine, new ProjectionEventListener(awailableGames, endedGames));
+            var eventPublisher = new EventPublisher(Console.WriteLine, new ProjectionEventListener(availableGames, endedGames));
             var eventStore = new PublishingEventStore(new InMemoryEventStore(() => new InMemoryEventStream()), eventPublisher);
 
             commandDispatcher.Register<IGameCommand>(
                 command => ApplicationService.UpdateAsync<Game.Domain.Game, GameState>(
                     state => new Game.Domain.Game(state), eventStore, command, game =>
                     {
-                        CpuUtils.Slow(500);
+                        CpuUtils.Slow(1500);
                         return game.Handle(command);
                     }));
 
-            var bus = new ApplicationServer(commandDispatcher.Dispatch, new ConsoleLogger());
-
             var cb = new ContainerBuilder();
-            cb.RegisterInstance(bus).AsImplementedInterfaces();
-            cb.RegisterType<ReadService>().AsImplementedInterfaces().SingleInstance();
-            cb.RegisterInstance(awailableGames).AsSelf();
-            cb.RegisterInstance(endedGames).AsSelf();
+            cb.RegisterInstance(commandDispatcher).AsSelf().SingleInstance();
+            cb.RegisterType<ReadService>().AsImplementedInterfaces();
+            cb.RegisterInstance(availableGames).AsSelf().SingleInstance();
+            cb.RegisterInstance(endedGames).AsSelf().SingleInstance();
             cb.RegisterApiControllers(Assembly.GetExecutingAssembly());
 
             config.DependencyResolver = new AutofacWebApiDependencyResolver(cb.Build());
