@@ -16,8 +16,6 @@ using Treefort.Infrastructure;
 using Treefort.Commanding;
 using Treefort.Read;
 
-[assembly: OwinStartup(typeof(RPS.Api.Startup))]
-
 namespace RPS.Api
 {
     public static class RouteConfiguration
