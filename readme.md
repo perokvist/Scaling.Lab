@@ -5,9 +5,9 @@
 The Company that runs the popular RPS-Game-As-A-Service is having trouble to handle traffic and performance.
 The service is a single solution with six endpoints. They now seek your help to scale the solution to handle the ever growing traffic.
 
-In this lab you're going to diagnose their problem and investige options a round azure web sites scaling that could aid in solving the issues.
+In this lab you're going to diagnose their problem and investige options around azure web sites scaling that could aid in solving the issues.
 
-> The client doen't utilize and caching.
+> Note: The client doesn't utilize and caching, for the purpose of the lab.
 
 ### Prequisites
 
@@ -22,8 +22,10 @@ In this lab you're going to diagnose their problem and investige options a round
 
 returns Accepted (202)
 
+(ah: the gameId not returned?)
+
 ##### PlayerTwo - Make a move
-> **PUT** (your-site/api/games/available/{gameId})
+> **PUT** (api/games/available/{gameId})
 
     { playerName = "player2", move = "rock" }
 
@@ -37,7 +39,7 @@ returns available games.
 
 >**GET** api/Games/available/{ id }
 
-returns single availible game (200/404)
+returns single available game (200/404)
 
 ##### Ended Games
 
@@ -68,8 +70,8 @@ returns single ended game (200/404)
 
 ##### Part 2 - Scaling
 
-In this part you sould determine a scaling strategy. Configure your site for scaling and explore the strategy through load tests.
-In the end of the lab session each team should present their findings and lessonsed learned.
+In this part you should determine a scaling strategy. Configure your site for scaling and explore the strategy through load tests.
+In the end of the lab session each team should present their findings and lessons learned.
 
 ##### Part 3 - Clean up
 
