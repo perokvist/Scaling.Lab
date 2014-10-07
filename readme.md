@@ -23,7 +23,7 @@ In this lab you're going to diagnose their problem and investige options a round
 returns Accepted (202)
 
 ##### PlayerTwo - Make a move
-> **PUT** (your-site/api/games/awailable/{gameId})
+> **PUT** (your-site/api/games/available/{gameId})
 
     { playerName = "player2", move = "rock" }
 
@@ -57,19 +57,3 @@ returns single ended game (200/404)
 - Investigate the web sites auto scale options
 - Scaling and entity caching - problems ?
 
-
-### Full Game Test
-
- 	using (var client = new HttpClient())
-            {
-                var createResponse = await client.PostAsJsonAsync(_baseAddress + "api/Games/", new { playerName = "Mario", gameName = "FullGame", move = "rock" });
-                await Task.Delay(50);
-                var awailableResponse = await client.GetAsync(createResponse.Headers.Location);
-                var game = await awailableResponse.Content.ReadAsAsync<Game>();
-                var moveResponse = await client.PutAsJsonAsync(_baseAddress + "api/Games/awailable/" + game.GameId, new { playerName = "Lugi", move = "paper" });
-                await Task.Delay(50);
-                var endenResponse = await client.GetAsync(moveResponse.Headers.Location);
-                var endGame = await endenResponse.Content.ReadAsAsync<EndedGame>();
-
-                Assert.Equal("PlayerTwoWin", endGame.Winner);     
-            } 
