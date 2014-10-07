@@ -29,15 +29,15 @@ returns Accepted (202)
 
 returns Accepted (202)
 
-##### Awailable Games
+##### Available Games
 
->**GET** (api/Games/awailable/)
+>**GET** (api/Games/available/)
 
-returns awailable games.
+returns available games.
 
->**GET** api/Games/awailable/{ id }
+>**GET** api/Games/available/{ id }
 
-returns single awailible game (200/404)
+returns single availible game (200/404)
 
 ##### Ended Games
 
