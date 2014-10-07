@@ -50,10 +50,47 @@ returns ended games. (200)
 
 returns single ended game (200/404)
 
-### Tasks
-- Configure diagnostics for Azure Web Sites and add Tracing
-- Load test
-- Add NewRelic to further aid diagnostics
-- Investigate the web sites auto scale options
-- Scaling and entity caching - problems ?
+
+### Instructions
+
+##### Part 1 - Exploring
+
+1. Publish the solution to an Azure web site.
+2. Try out site manager on yoursite.scm.azurewebsites.net
+3. Enable Trace logging in the app Startup
+4. Find one or more ways to use tracing. (see resources)
+5. Add some metric to observe. [documentation](http://azure.microsoft.com/en-us/documentation/articles/web-sites-monitor/)
+6. Follow the guide to configure an alert on your metric. Use the Dummy client to get the alert to trigger.
+7. Add NewRelic to your site, usig site extensions or [documentation](https://docs.newrelic.com/docs/agents/net-agent/azure-installation/azure-websites). 
+8. Use the Dummy client to produce some metric to explore in NewRelic.
+9. Add loader.io to your web site and follow instruction to verify your site.
+10. Create a simple loader.io test. Check results and NewRelic metrics.
+
+##### Part 2 - Scaling
+
+In this part you sould determine a scaling strategy. Configure your site for scaling and explore the strategy through load tests.
+In the end of the lab session each team should present their findings and lessonsed learned.
+
+##### Part 3 - Clean up
+
+Remove all your sites and add-on after presentations.
+
+### Resources
+- [Streaming Diagnostics Trace Logging from the Azure Command Line (plus Glimpse!)](http://www.hanselman.com/blog/StreamingDiagnosticsTraceLoggingFromTheAzureCommandLinePlusGlimpse.aspx)
+- [Azure Website Logging - Tips and Tools](http://blog.amitapple.com/post/2014/06/azure-website-logging/#.VDPaLfmSyPY)
+- [Scaling a standard Azure website to 380k queries per minute of 163M records with loader.io](http://www.troyhunt.com/2014/07/scaling-standard-azure-website-to-380k.html)
+
+### Code Utils
+
+In the code, their are two utils for simulating time and CPU usage. Tweak these as you please to inprove your test/simulation.
+
+Time and CPU on all GET, attribute;
+
+            config.Filters.Add(new LoadAttribute(100, 20));
+
+Util for Prime Number calculation (CPU);
+
+            CpuUtils.Slow(1500);
+
+
 
