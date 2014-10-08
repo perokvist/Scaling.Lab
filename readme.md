@@ -11,7 +11,7 @@ In this lab you're going to diagnose their problem and investige options around 
 
 ### Prequisites
 
-- Add nuget feed - myget.org/f/treefort
+- Add nuget feed - https://myget.org/f/treefort
 
 ###API
 
@@ -20,16 +20,14 @@ In this lab you're going to diagnose their problem and investige options around 
 
 	`{ playerName ="player", gameName = "testGame", move = "paper"}`
 
-returns Accepted (202)
-
-(ah: the gameId not returned?)
+returns Accepted (202) with location header.
 
 ##### PlayerTwo - Make a move
 > **PUT** (api/games/available/{gameId})
 
     { playerName = "player2", move = "rock" }
 
-returns Accepted (202)
+returns Accepted (202) with location header.
 
 ##### Available Games
 
