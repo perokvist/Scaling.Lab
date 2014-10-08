@@ -71,6 +71,8 @@ returns single ended game (200/404)
 In this part you should determine a scaling strategy. Configure your site for scaling and explore the strategy through load tests.
 In the end of the lab session each team should present their findings and lessons learned.
 
+We'll dicuss this part in the lab introduction.
+
 ##### Part 3 - Clean up
 
 Remove all your sites and add-on after presentations.
