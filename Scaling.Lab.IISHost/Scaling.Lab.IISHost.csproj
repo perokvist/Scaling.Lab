@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\rps-game.pubxml" />
     <None Include="Properties\PublishProfiles\scaling-lab.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

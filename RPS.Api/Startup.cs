@@ -5,6 +5,7 @@ using System.Web.Http;
 using Autofac;
 using Autofac.Integration.WebApi;
 using Microsoft.Owin;
+using Microsoft.Owin.Cors;
 using Owin;
 using RPS.Game.Domain;
 using RPS.Game.ReadModel;
@@ -31,8 +32,9 @@ namespace RPS.Api
 
             var config = new HttpConfiguration();
             config.MapHttpAttributeRoutes();
+            config.MessageHandlers.Add(new NullJsonHandler());
             config.Formatters.Remove(config.Formatters.XmlFormatter);
-            config.Filters.Add(new LoadAttribute(100, 20));
+            //config.Filters.Add(new LoadAttribute(100, 20));
 
             //Local config
             var commandDispatcher = new Dispatcher<ICommand, Task>();
@@ -40,18 +42,12 @@ namespace RPS.Api
             var availableGames = new AvailableGames();
             var endedGames = new EndendGames();
 
-            //TODO log to trace
-            //http://blog.amitapple.com/post/2014/06/azure-website-logging/#.VC6_jvmSyPY
             var eventPublisher = new EventPublisher(Console.WriteLine, new ProjectionEventListener(availableGames, endedGames));
             var eventStore = new PublishingEventStore(new InMemoryEventStore(() => new InMemoryEventStream()), eventPublisher);
 
             commandDispatcher.Register<IGameCommand>(
                 command => ApplicationService.UpdateAsync<Game.Domain.Game, GameState>(
-                    state => new Game.Domain.Game(state), eventStore, command, game =>
-                    {
-                        CpuUtils.Slow(1500);
-                        return game.Handle(command);
-                    }));
+                    state => new Game.Domain.Game(state), eventStore, command, game => game.Handle(command)));
 
             var cb = new ContainerBuilder();
             cb.RegisterInstance(commandDispatcher).AsSelf().SingleInstance();
@@ -61,6 +57,8 @@ namespace RPS.Api
             cb.RegisterApiControllers(Assembly.GetExecutingAssembly());
 
             config.DependencyResolver = new AutofacWebApiDependencyResolver(cb.Build());
+
+            app.UseCors(CorsOptions.AllowAll);
 
             app.UseWebApi(config);
 
